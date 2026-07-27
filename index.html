@@ -3,140 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etsangou | Développeur & Ingénieur</title>
+    <title>Etsangou | Ingénieur Logiciel & Hardware</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- CORRECTION ICI : Utilisation de <script> au lieu de <style> -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        dark: '#0a0a0f',
-                        panel: '#13131a',
-                        accent: '#3b82f6', // Bleu tech
-                        terminal: '#10b981', // Vert CLI
+                        dark: '#050505', // Plus profond pour faire ressortir les particules
+                        panel: '#111116',
+                        accent: '#3b82f6', 
+                        terminal: '#10b981', 
                     },
                     fontFamily: {
                         mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
                         sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-out': 'fadeOut 0.8s ease-out forwards',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeOut: {
+                            '0%': { opacity: '1', visibility: 'visible' },
+                            '100%': { opacity: '0', visibility: 'hidden' },
+                        }
                     }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* S'assure que le canvas reste bien en fond */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: auto; /* Permet l'interaction avec la souris */
+        }
+        /* Style pour l'effet de frappe du splash screen */
+        .typing-cursor::after {
+            content: '█';
+            animation: blink 1s step-start infinite;
+            color: #10b981;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        /* Transparence des cartes pour voir le fond */
+        .glass-panel {
+            background: rgba(17, 17, 22, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
 </head>
-<body class="bg-dark text-gray-300 font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-dark text-gray-300 font-sans antialiased min-h-screen flex flex-col relative">
 
-    <!-- En-tête -->
-    <header class="pt-20 pb-12 px-6 border-b border-gray-800/50 bg-panel/30 backdrop-blur-sm relative overflow-hidden">
-        <div class="absolute top-0 left-1/2 w-full h-px bg-gradient-to-r from-transparent via-accent to-transparent -translate-x-1/2 opacity-50"></div>
-        <div class="max-w-5xl mx-auto">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
-                enzo<span class="text-accent">@</span>etsangou <span class="text-gray-500 font-mono text-2xl font-normal">~ $</span>
-            </h1>
-            <p class="text-lg md:text-xl text-gray-400 max-w-2xl font-mono">
-                > Spécialisé en C++, IA, Web et Architecture Hardware.
-            </p>
-            <div class="mt-6 flex gap-3">
-                <a href="https://github.com/etsangou" target="_blank" class="px-5 py-2.5 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
-                    GitHub (51 Repos)
-                </a>
-            </div>
+    <!-- CANVAS BACKGROUND DYNAMIQUE -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- SPLASH SCREEN (Écran de chargement terminal) -->
+    <div id="splash-screen" class="fixed inset-0 z-50 bg-dark flex flex-col justify-center px-10 font-mono text-sm md:text-lg text-terminal">
+        <div id="boot-text" class="max-w-3xl mx-auto w-full">
+            <!-- Le texte sera injecté via JS -->
+            <span class="typing-cursor"></span>
         </div>
-    </header>
+    </div>
 
-    <!-- Contenu Principal -->
-    <main class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
+    <!-- CONTENU DU SITE (Caché au départ) -->
+    <div id="main-content" class="opacity-0 transition-opacity duration-1000 flex-grow flex flex-col">
         
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                <span class="text-terminal font-mono">ls -la</span> Projets Mis en Avant
-            </h2>
-        </div>
+        <!-- En-tête -->
+        <header class="pt-24 pb-12 px-6 border-b border-gray-800/30 glass-panel relative">
+            <div class="absolute top-0 left-1/2 w-full h-px bg-gradient-to-r from-transparent via-accent to-transparent -translate-x-1/2 opacity-30"></div>
+            <div class="max-w-6xl mx-auto">
+                <div class="inline-block px-3 py-1 border border-terminal/30 bg-terminal/10 text-terminal rounded-full text-xs font-mono mb-6">
+                    <span class="w-2 h-2 inline-block bg-terminal rounded-full mr-2 animate-pulse-fast"></span>
+                    System Online
+                </div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight drop-shadow-lg">
+                    enzo<span class="text-accent">@</span>etsangou <span class="text-gray-500 font-mono text-3xl font-normal">~ $</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-400 max-w-2xl font-mono mb-8 leading-relaxed">
+                    > Ingénieur polyvalent. <br>
+                    > Domaines : C++, Intelligence Artificielle, Web & Hardware.
+                </p>
+                <div class="flex gap-4">
+                    <a href="https://github.com/etsangou" target="_blank" class="px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-all flex items-center gap-2 hover:scale-105 transform duration-200">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+                        GitHub Profil
+                    </a>
+                </div>
+            </div>
+        </header>
 
-        <!-- Grille de projets -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Contenu Principal -->
+        <main class="flex-grow max-w-6xl mx-auto px-6 py-16 w-full">
             
-            <!-- Projet 1 : Moteur de jeu -->
-            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group">
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/redPoint">etsangou/redPoint</a></h3>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-gray-800 text-gray-400 border border-gray-700">Private</span>
-                </div>
-                <p class="text-gray-400 text-sm mb-6 h-10">RedPoint est un moteur de jeu développé de A à Z. Focus sur l'optimisation et le rendu bas niveau.</p>
-                <div class="flex justify-between items-center text-xs font-mono text-gray-500">
-                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> C++ / OpenGL</span>
-                    <span>Modifié il y a 1 an</span>
-                </div>
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                    <span class="text-accent font-mono text-2xl">ls -la</span> Projets Publics (Open Source)
+                </h2>
+                <p class="text-gray-500 font-mono mt-2">> Affichage de mes dépôts accessibles au public sur GitHub.</p>
             </div>
 
-            <!-- Projet 2 : IA -->
-            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group">
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/unty_Projet_ChessIA">etsangou/unty_Projet_ChessIA</a></h3>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-gray-800 text-gray-400 border border-gray-700">Private</span>
+            <!-- Grille Responsive des projets (1 col sur mobile, 2 sur tablette, 3 sur grand écran) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Projet Public 1 (Mise en avant sur 2 colonnes si possible) -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group md:col-span-2 lg:col-span-2 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-2xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/Thorium" target="_blank">etsangou/Thorium</a></h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30 shadow-[0_0_10px_rgba(59,130,246,0.3)]">Public</span>
+                    </div>
+                    <p class="text-gray-300 mb-6 text-lg">Création d'une application de gestion et d'interface utilisateur (UI). Projet ambitieux pour explorer de nouveaux paradigmes de développement d'applications.</p>
+                    <div class="flex justify-between items-center text-sm font-mono text-gray-400">
+                        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.6)]"></span> Web / App Dev</span>
+                        <span>Mise à jour rct.</span>
+                    </div>
                 </div>
-                <p class="text-gray-400 text-sm mb-6 h-10">Chess IA est un bot d'intelligence artificielle capable d'analyser et de jouer aux échecs.</p>
-                <div class="flex justify-between items-center text-xs font-mono text-gray-500">
-                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span> C# / Unity / IA</span>
-                    <span>Modifié il y a 7 mois</span>
-                </div>
-            </div>
 
-            <!-- Projet 3 : Application Web -->
-            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group">
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/Thorium">etsangou/Thorium</a></h3>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-accent/10 text-accent border border-accent/20">Public</span>
+                <!-- Projet Public 2 -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/dev" target="_blank">etsangou/dev</a></h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6 flex-grow">Environnement de développement, scripts d'automatisation et outillage personnel.</p>
+                    <div class="flex justify-between items-center text-xs font-mono text-gray-500 mt-auto">
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500"></span> Scripts / SysAdmin</span>
+                    </div>
                 </div>
-                <p class="text-gray-400 text-sm mb-6 h-10">Création d'une application de gestion et d'interface utilisateur performante.</p>
-                <div class="flex justify-between items-center text-xs font-mono text-gray-500">
-                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-400"></span> Web / App</span>
-                    <span>Modifié il y a 3 mois</span>
-                </div>
-            </div>
 
-            <!-- Projet 4 : Hardware / Bas niveau -->
-            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group">
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/qore_vm">etsangou/qore_vm</a></h3>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-gray-800 text-gray-400 border border-gray-700">Private</span>
+                <!-- Projet Public 3 -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors truncate pr-4" title="etsangou/Projet_2026_weight_..."><a href="https://github.com/etsangou/Projet_2026_weight" target="_blank">etsangou/Projet_2026...</a></h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6">Backup et gestion du projet Weight (Vision 2026). Code source et architecture logicielle.</p>
+                    <div class="flex justify-between items-center text-xs font-mono text-gray-500">
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Architecture</span>
+                    </div>
                 </div>
-                <p class="text-gray-400 text-sm mb-6 h-10">Conception d'une machine virtuelle (VM) sur mesure pour l'exécution d'instructions bas niveau.</p>
-                <div class="flex justify-between items-center text-xs font-mono text-gray-500">
-                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span> Architecture / C++</span>
-                    <span>Modifié il y a 6 mois</span>
-                </div>
-            </div>
 
-            <!-- Projet 5 : Récent -->
-            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group md:col-span-2">
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/foch_assistant">etsangou/foch_assistant</a></h3>
-                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-gray-800 text-gray-400 border border-gray-700 flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-terminal animate-pulse"></span> Récent (9 jours)
-                    </span>
+                <!-- Projet Public 4 -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/ZeGladioGX.github.io" target="_blank">etsangou/ZeGladioGX...</a></h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6">Déploiement d'un site web statique via GitHub Pages. Expérimentations Frontend.</p>
+                    <div class="flex justify-between items-center text-xs font-mono text-gray-500">
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-orange-500"></span> HTML / CSS</span>
+                    </div>
                 </div>
-                <p class="text-gray-400 text-sm mb-2">Suite d’applications pour le support et l'assistance technique.</p>
-                <div class="mt-4 flex flex-wrap gap-2 font-mono text-xs text-gray-500">
-                    <span class="bg-gray-800/80 px-2 py-1 rounded">Automation</span>
-                    <span class="bg-gray-800/80 px-2 py-1 rounded">Outils internes</span>
+
+                <!-- Projet Public 5 -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/etsangou.github.io" target="_blank">etsangou.github.io</a></h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-6">Le code source de ce portfolio ! Hébergé et déployé automatiquement.</p>
+                    <div class="flex justify-between items-center text-xs font-mono text-gray-500">
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-400"></span> Tailwind / JS</span>
+                    </div>
                 </div>
+
             </div>
+        </main>
+
+        <!-- Pied de page -->
+        <footer class="border-t border-gray-800/50 glass-panel py-8 mt-auto">
+            <div class="max-w-6xl mx-auto px-6 text-center flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm font-mono">
+                    > root@serveur:~$ exit
+                </p>
+                <p class="text-gray-500 text-sm">
+                    © 2026 Etsangou. Design dynamique interactif.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- SCRIPTS JS -->
+    <script>
+        /* ---------------------------------------------------
+           1. LOGIQUE DU SPLASH SCREEN (Terminal Boot)
+        --------------------------------------------------- */
+        const bootSequence = [
+            "Initializing kernel...",
+            "Loading C++ dependencies........ [OK]",
+            "Mounting hardware interfaces.... [OK]",
+            "Establishing Neural Networks.... [OK]",
+            "Fetching GitHub Repositories.... [OK]",
+            "Welcome to enzo@etsangou portfolio."
+        ];
+        
+        const bootTextElement = document.getElementById('boot-text');
+        const splashScreen = document.getElementById('splash-screen');
+        const mainContent = document.getElementById('main-content');
+        let currentLine = 0;
+
+        function typeLine() {
+            if (currentLine < bootSequence.length) {
+                const p = document.createElement('p');
+                p.textContent = "> " + bootSequence[currentLine];
+                p.className = "mb-2 text-terminal";
+                
+                // Insérer avant le curseur
+                const cursor = document.querySelector('.typing-cursor');
+                bootTextElement.insertBefore(p, cursor);
+                
+                currentLine++;
+                // Vitesse de frappe aléatoire pour le style
+                setTimeout(typeLine, Math.random() * 200 + 100); 
+            } else {
+                // Fin de la séquence, on cache le splash et on affiche le site
+                setTimeout(() => {
+                    splashScreen.classList.add('animate-fade-out');
+                    setTimeout(() => {
+                        splashScreen.style.display = 'none';
+                        mainContent.classList.remove('opacity-0');
+                    }, 800); // Temps de l'animation CSS
+                }, 500);
+            }
+        }
+        
+        // Lancer l'animation de boot au chargement
+        window.addEventListener('load', () => {
+            setTimeout(typeLine, 300);
+        });
+
+        /* ---------------------------------------------------
+           2. LOGIQUE DU BACKGROUND DYNAMIQUE (Particules)
+        --------------------------------------------------- */
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let particlesArray = [];
+        const numberOfParticles = 100; // Ajuster selon les perfs voulues
+
+        // Interaction souris
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 150 // Rayon d'interaction
+        }
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        window.addEventListener('mouseout', function() {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        // Redimensionner le canvas
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', setCanvasSize);
+        setCanvasSize();
+
+        // Classe Particule
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+                this.baseX = this.x;
+                this.baseY = this.y;
+            }
+            // Dessiner
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            // Mettre à jour la position
+            update() {
+                // Rebond sur les bords
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+
+                // Interaction avec la souris (Répulsion légère)
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 1.5;
+                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 1.5;
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 1.5;
+                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 1.5;
+                }
+
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        // Initialiser le réseau
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 0.5;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                // Vitesse de déplacement très lente (ambiance spatiale/technique)
+                let directionX = (Math.random() * 0.8) - 0.4;
+                let directionY = (Math.random() * 0.8) - 0.4;
+                let color = 'rgba(59, 130, 246, 0.8)'; // Bleu tech (accent)
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        // Relier les particules proches par des lignes
+        function connectParticles() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) 
+                                 + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    
+                    // Si la distance est faible, on trace une ligne
+                    if (distance < (canvas.width / 10) * (canvas.height / 10)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = 'rgba(59, 130, 246,' + opacityValue + ')'; // Lignes bleues
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        // Boucle d'animation
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
             
-        </div>
-    </main>
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connectParticles();
+        }
 
-    <!-- Pied de page -->
-    <footer class="border-t border-gray-800/50 bg-panel/30 py-8 mt-auto">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <p class="text-gray-500 text-sm font-mono">
-                > Déployé via GitHub Pages // <a href="https://github.com/etsangou" class="hover:text-white transition-colors">@etsangou</a>
-            </p>
-        </div>
-    </footer>
-
+        initParticles();
+        animateParticles();
+    </script>
 </body>
 </html>
