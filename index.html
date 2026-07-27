@@ -10,7 +10,7 @@
             theme: {
                 extend: {
                     colors: {
-                        dark: '#050505', // Plus profond pour faire ressortir les particules
+                        dark: '#050505',
                         panel: '#111116',
                         accent: '#3b82f6', 
                         terminal: '#10b981', 
@@ -35,7 +35,6 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* S'assure que le canvas reste bien en fond */
         #particle-canvas {
             position: fixed;
             top: 0;
@@ -43,16 +42,14 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            pointer-events: auto; /* Permet l'interaction avec la souris */
+            pointer-events: auto;
         }
-        /* Style pour l'effet de frappe du splash screen */
         .typing-cursor::after {
             content: '█';
             animation: blink 1s step-start infinite;
             color: #10b981;
         }
         @keyframes blink { 50% { opacity: 0; } }
-        /* Transparence des cartes pour voir le fond */
         .glass-panel {
             background: rgba(17, 17, 22, 0.7);
             backdrop-filter: blur(8px);
@@ -60,118 +57,144 @@
         }
     </style>
 </head>
-<body class="bg-dark text-gray-300 font-sans antialiased min-h-screen flex flex-col relative">
+<body class="bg-dark text-gray-300 font-sans antialiased min-h-screen flex flex-col relative overflow-x-hidden">
 
-    <!-- CANVAS BACKGROUND DYNAMIQUE -->
+    <!-- CANVAS BACKGROUND -->
     <canvas id="particle-canvas"></canvas>
 
-    <!-- SPLASH SCREEN (Écran de chargement terminal) -->
-    <div id="splash-screen" class="fixed inset-0 z-50 bg-dark flex flex-col justify-center px-10 font-mono text-sm md:text-lg text-terminal">
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen" class="fixed inset-0 z-50 bg-dark flex flex-col justify-center px-6 md:px-10 font-mono text-xs sm:text-sm md:text-lg text-terminal">
         <div id="boot-text" class="max-w-3xl mx-auto w-full">
-            <!-- Le texte sera injecté via JS -->
             <span class="typing-cursor"></span>
         </div>
     </div>
 
-    <!-- CONTENU DU SITE (Caché au départ) -->
+    <!-- CONTENU PRINCIPAL -->
     <div id="main-content" class="opacity-0 transition-opacity duration-1000 flex-grow flex flex-col">
         
         <!-- En-tête -->
-        <header class="pt-24 pb-12 px-6 border-b border-gray-800/30 glass-panel relative">
+        <header class="pt-20 md:pt-24 pb-10 md:pb-12 px-4 md:px-6 border-b border-gray-800/30 glass-panel relative">
             <div class="absolute top-0 left-1/2 w-full h-px bg-gradient-to-r from-transparent via-accent to-transparent -translate-x-1/2 opacity-30"></div>
             <div class="max-w-6xl mx-auto">
-                <div class="inline-block px-3 py-1 border border-terminal/30 bg-terminal/10 text-terminal rounded-full text-xs font-mono mb-6">
+                <div class="inline-block px-3 py-1 border border-terminal/30 bg-terminal/10 text-terminal rounded-full text-[10px] md:text-xs font-mono mb-4 md:mb-6">
                     <span class="w-2 h-2 inline-block bg-terminal rounded-full mr-2 animate-pulse-fast"></span>
                     System Online
                 </div>
-                <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight drop-shadow-lg">
-                    enzo<span class="text-accent">@</span>etsangou <span class="text-gray-500 font-mono text-3xl font-normal">~ $</span>
+                
+                <!-- Titre responsive (plus petit sur mobile, grand sur PC) -->
+                <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white mb-3 md:mb-4 tracking-tight drop-shadow-lg break-words">
+                    enzo<span class="text-accent">@</span>etsangou <span class="text-gray-500 font-mono text-xl sm:text-3xl font-normal">~ $</span>
                 </h1>
-                <p class="text-lg md:text-xl text-gray-400 max-w-2xl font-mono mb-8 leading-relaxed">
+                
+                <p class="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl font-mono mb-8 leading-relaxed">
                     > Ingénieur polyvalent. <br>
-                    > Domaines : C++, Intelligence Artificielle, Web & Hardware.
+                    > Domaines : C++, IA, Web & Hardware.
                 </p>
-                <div class="flex gap-4">
-                    <a href="https://github.com/etsangou" target="_blank" class="px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-all flex items-center gap-2 hover:scale-105 transform duration-200">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
-                        GitHub Profil
+                
+                <!-- BOUTONS RÉSEAUX & CONTACTS (Flex wrap pour passer à la ligne sur mobile) -->
+                <div class="flex flex-wrap gap-3 md:gap-4">
+                    
+                    <!-- GitHub -->
+                    <a href="https://github.com/etsangou" target="_blank" class="px-5 py-2.5 md:px-6 md:py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-all flex items-center gap-2 hover:-translate-y-1 transform duration-200 w-full sm:w-auto justify-center">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+                        GitHub
                     </a>
+
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/in/enzo-tsangouabeka/" target="_blank" class="px-4 py-2.5 md:py-3 glass-panel border border-gray-700/50 text-white font-semibold rounded-lg hover:border-[#0a66c2] hover:text-[#0a66c2] transition-all flex items-center gap-2 hover:-translate-y-1 transform duration-200 flex-1 sm:flex-none justify-center">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        <span class="hidden sm:inline">LinkedIn</span>
+                    </a>
+
+                    <!-- YouTube -->
+                    <a href="https://www.youtube.com/@etsangou" target="_blank" class="px-4 py-2.5 md:py-3 glass-panel border border-gray-700/50 text-white font-semibold rounded-lg hover:border-[#ff0000] hover:text-[#ff0000] transition-all flex items-center gap-2 hover:-translate-y-1 transform duration-200 flex-1 sm:flex-none justify-center">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                        <span class="hidden sm:inline">YouTube</span>
+                    </a>
+
+                    <!-- Discord (Copie au clic) -->
+                    <button onclick="copyDiscord()" class="px-4 py-2.5 md:py-3 glass-panel border border-gray-700/50 text-white font-semibold rounded-lg hover:border-[#5865F2] hover:text-[#5865F2] transition-all flex items-center gap-2 hover:-translate-y-1 transform duration-200 flex-1 sm:flex-none justify-center relative group">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.419-2.1569 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419z"/></svg>
+                        <span id="discord-text" class="hidden sm:inline">just_king</span>
+                        <!-- Info-bulle invisible sur mobile, utile sur PC -->
+                        <span class="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none hidden sm:block">Copier le pseudo</span>
+                    </button>
+
                 </div>
             </div>
         </header>
 
-        <!-- Contenu Principal -->
-        <main class="flex-grow max-w-6xl mx-auto px-6 py-16 w-full">
+        <!-- Contenu Projets -->
+        <main class="flex-grow max-w-6xl mx-auto px-4 md:px-6 py-10 md:py-16 w-full">
             
-            <div class="mb-10">
-                <h2 class="text-3xl font-bold text-white flex items-center gap-3">
-                    <span class="text-accent font-mono text-2xl">ls -la</span> Projets Publics (Open Source)
+            <div class="mb-8 md:mb-10">
+                <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-2 md:gap-3">
+                    <span class="text-accent font-mono text-xl md:text-2xl">ls -la</span> Projets Publics
                 </h2>
-                <p class="text-gray-500 font-mono mt-2">> Affichage de mes dépôts accessibles au public sur GitHub.</p>
+                <p class="text-gray-500 font-mono mt-2 text-sm md:text-base">> Open Source & Expérimentations.</p>
             </div>
 
-            <!-- Grille Responsive des projets (1 col sur mobile, 2 sur tablette, 3 sur grand écran) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Grille Responsive -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 
-                <!-- Projet Public 1 (Mise en avant sur 2 colonnes si possible) -->
-                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group md:col-span-2 lg:col-span-2 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
+                <!-- Projet 1 -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-5 md:p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group md:col-span-2 lg:col-span-2 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-accent/10 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-2xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/Thorium" target="_blank">etsangou/Thorium</a></h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30 shadow-[0_0_10px_rgba(59,130,246,0.3)]">Public</span>
+                        <h3 class="text-xl md:text-2xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/Thorium" target="_blank">etsangou/Thorium</a></h3>
+                        <span class="px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-mono bg-accent/20 text-accent border border-accent/30 shadow-[0_0_10px_rgba(59,130,246,0.3)]">Public</span>
                     </div>
-                    <p class="text-gray-300 mb-6 text-lg">Création d'une application de gestion et d'interface utilisateur (UI). Projet ambitieux pour explorer de nouveaux paradigmes de développement d'applications.</p>
-                    <div class="flex justify-between items-center text-sm font-mono text-gray-400">
-                        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.6)]"></span> Web / App Dev</span>
-                        <span>Mise à jour rct.</span>
+                    <p class="text-gray-300 mb-6 text-sm md:text-lg">Création d'une application de gestion et d'interface utilisateur (UI). Projet ambitieux pour explorer de nouveaux paradigmes de développement d'applications.</p>
+                    <div class="flex justify-between items-center text-xs md:text-sm font-mono text-gray-400">
+                        <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.6)]"></span> Web / App</span>
                     </div>
                 </div>
 
-                <!-- Projet Public 2 -->
-                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+                <!-- Projet 2 -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-5 md:p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative flex flex-col">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/dev" target="_blank">etsangou/dev</a></h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
+                        <h3 class="text-lg md:text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/dev" target="_blank">etsangou/dev</a></h3>
+                        <span class="px-2 py-1 rounded-full text-[10px] md:text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
                     </div>
-                    <p class="text-gray-400 text-sm mb-6 flex-grow">Environnement de développement, scripts d'automatisation et outillage personnel.</p>
+                    <p class="text-gray-400 text-xs md:text-sm mb-6 flex-grow">Environnement de développement, scripts d'automatisation et outillage personnel.</p>
                     <div class="flex justify-between items-center text-xs font-mono text-gray-500 mt-auto">
-                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500"></span> Scripts / SysAdmin</span>
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500"></span> Scripts</span>
                     </div>
                 </div>
 
-                <!-- Projet Public 3 -->
-                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+                <!-- Projet 3 -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-5 md:p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative flex flex-col">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors truncate pr-4" title="etsangou/Projet_2026_weight_..."><a href="https://github.com/etsangou/Projet_2026_weight" target="_blank">etsangou/Projet_2026...</a></h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
+                        <h3 class="text-lg md:text-xl font-bold text-white group-hover:text-accent transition-colors truncate pr-2" title="etsangou/Projet_2026_weight"><a href="https://github.com/etsangou/Projet_2026_weight" target="_blank">Projet_2026_weight</a></h3>
+                        <span class="px-2 py-1 rounded-full text-[10px] md:text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
                     </div>
-                    <p class="text-gray-400 text-sm mb-6">Backup et gestion du projet Weight (Vision 2026). Code source et architecture logicielle.</p>
-                    <div class="flex justify-between items-center text-xs font-mono text-gray-500">
+                    <p class="text-gray-400 text-xs md:text-sm mb-6 flex-grow">Backup et gestion du projet Weight (Vision 2026). Code source et architecture logicielle.</p>
+                    <div class="flex justify-between items-center text-xs font-mono text-gray-500 mt-auto">
                         <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Architecture</span>
                     </div>
                 </div>
 
-                <!-- Projet Public 4 -->
-                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+                <!-- Projet 4 -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-5 md:p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative flex flex-col">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/ZeGladioGX.github.io" target="_blank">etsangou/ZeGladioGX...</a></h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
+                        <h3 class="text-lg md:text-xl font-bold text-white group-hover:text-accent transition-colors truncate pr-2" title="etsangou/ZeGladioGX.github.io"><a href="https://github.com/etsangou/ZeGladioGX.github.io" target="_blank">ZeGladioGX.io</a></h3>
+                        <span class="px-2 py-1 rounded-full text-[10px] md:text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
                     </div>
-                    <p class="text-gray-400 text-sm mb-6">Déploiement d'un site web statique via GitHub Pages. Expérimentations Frontend.</p>
-                    <div class="flex justify-between items-center text-xs font-mono text-gray-500">
-                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-orange-500"></span> HTML / CSS</span>
+                    <p class="text-gray-400 text-xs md:text-sm mb-6 flex-grow">Déploiement d'un site web statique via GitHub Pages. Expérimentations Frontend.</p>
+                    <div class="flex justify-between items-center text-xs font-mono text-gray-500 mt-auto">
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-orange-500"></span> HTML/CSS</span>
                     </div>
                 </div>
 
-                <!-- Projet Public 5 -->
-                <div class="glass-panel border border-gray-700/50 rounded-xl p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden">
+                <!-- Projet 5 -->
+                <div class="glass-panel border border-gray-700/50 rounded-xl p-5 md:p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative flex flex-col">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/etsangou.github.io" target="_blank">etsangou.github.io</a></h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
+                        <h3 class="text-lg md:text-xl font-bold text-white group-hover:text-accent transition-colors truncate pr-2"><a href="https://github.com/etsangou/etsangou.github.io" target="_blank">etsangou.github.io</a></h3>
+                        <span class="px-2 py-1 rounded-full text-[10px] md:text-xs font-mono bg-accent/20 text-accent border border-accent/30">Public</span>
                     </div>
-                    <p class="text-gray-400 text-sm mb-6">Le code source de ce portfolio ! Hébergé et déployé automatiquement.</p>
-                    <div class="flex justify-between items-center text-xs font-mono text-gray-500">
-                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-400"></span> Tailwind / JS</span>
+                    <p class="text-gray-400 text-xs md:text-sm mb-6 flex-grow">Le code source de ce portfolio ! Hébergé et déployé automatiquement.</p>
+                    <div class="flex justify-between items-center text-xs font-mono text-gray-500 mt-auto">
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-400"></span> Web</span>
                     </div>
                 </div>
 
@@ -179,13 +202,13 @@
         </main>
 
         <!-- Pied de page -->
-        <footer class="border-t border-gray-800/50 glass-panel py-8 mt-auto">
-            <div class="max-w-6xl mx-auto px-6 text-center flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-gray-500 text-sm font-mono">
+        <footer class="border-t border-gray-800/50 glass-panel py-6 md:py-8 mt-auto">
+            <div class="max-w-6xl mx-auto px-4 md:px-6 text-center flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4">
+                <p class="text-gray-500 text-xs md:text-sm font-mono">
                     > root@serveur:~$ exit
                 </p>
-                <p class="text-gray-500 text-sm">
-                    © 2026 Etsangou. Design dynamique interactif.
+                <p class="text-gray-500 text-xs md:text-sm">
+                    © 2026 Enzo Tsangou.
                 </p>
             </div>
         </footer>
@@ -193,9 +216,23 @@
 
     <!-- SCRIPTS JS -->
     <script>
-        /* ---------------------------------------------------
-           1. LOGIQUE DU SPLASH SCREEN (Terminal Boot)
-        --------------------------------------------------- */
+        /* Fonction pour copier le Discord */
+        function copyDiscord() {
+            navigator.clipboard.writeText("just_king");
+            const textEl = document.getElementById("discord-text");
+            // Changement temporaire du texte sur PC et Mobile
+            const originalText = textEl.innerText;
+            textEl.innerText = "Copié !";
+            textEl.classList.remove("hidden"); // Force l'affichage sur mobile brièvement
+            
+            setTimeout(() => { 
+                textEl.innerText = originalText;
+                textEl.classList.add("hidden"); // Cache à nouveau le texte sur mobile
+                textEl.classList.remove("sm:hidden"); // Reste visible sur PC (via sm:inline)
+            }, 2000);
+        }
+
+        /* 1. LOGIQUE DU SPLASH SCREEN */
         const bootSequence = [
             "Initializing kernel...",
             "Loading C++ dependencies........ [OK]",
@@ -214,59 +251,48 @@
             if (currentLine < bootSequence.length) {
                 const p = document.createElement('p');
                 p.textContent = "> " + bootSequence[currentLine];
-                p.className = "mb-2 text-terminal";
+                p.className = "mb-1 md:mb-2 text-terminal";
                 
-                // Insérer avant le curseur
                 const cursor = document.querySelector('.typing-cursor');
                 bootTextElement.insertBefore(p, cursor);
                 
                 currentLine++;
-                // Vitesse de frappe aléatoire pour le style
-                setTimeout(typeLine, Math.random() * 200 + 100); 
+                setTimeout(typeLine, Math.random() * 150 + 50); 
             } else {
-                // Fin de la séquence, on cache le splash et on affiche le site
                 setTimeout(() => {
                     splashScreen.classList.add('animate-fade-out');
                     setTimeout(() => {
                         splashScreen.style.display = 'none';
                         mainContent.classList.remove('opacity-0');
-                    }, 800); // Temps de l'animation CSS
+                    }, 800);
                 }, 500);
             }
         }
         
-        // Lancer l'animation de boot au chargement
         window.addEventListener('load', () => {
             setTimeout(typeLine, 300);
         });
 
-        /* ---------------------------------------------------
-           2. LOGIQUE DU BACKGROUND DYNAMIQUE (Particules)
-        --------------------------------------------------- */
+        /* 2. LOGIQUE DU BACKGROUND DYNAMIQUE */
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         
         let particlesArray = [];
-        const numberOfParticles = 100; // Ajuster selon les perfs voulues
+        // Moins de particules sur mobile pour éviter de faire ramer le téléphone
+        const isMobile = window.innerWidth < 768;
+        const numberOfParticles = isMobile ? 40 : 100; 
 
-        // Interaction souris
-        const mouse = {
-            x: null,
-            y: null,
-            radius: 150 // Rayon d'interaction
-        }
+        const mouse = { x: null, y: null, radius: 150 }
 
         window.addEventListener('mousemove', function(event) {
             mouse.x = event.x;
             mouse.y = event.y;
         });
 
-        window.addEventListener('mouseout', function() {
-            mouse.x = undefined;
-            mouse.y = undefined;
-        });
+        // Supprime l'interaction souris quand on quitte l'écran ou sur mobile
+        window.addEventListener('mouseout', function() { mouse.x = undefined; mouse.y = undefined; });
+        window.addEventListener('touchstart', function() { mouse.x = undefined; mouse.y = undefined; }); 
 
-        // Redimensionner le canvas
         function setCanvasSize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -274,36 +300,22 @@
         window.addEventListener('resize', setCanvasSize);
         setCanvasSize();
 
-        // Classe Particule
         class Particle {
             constructor(x, y, directionX, directionY, size, color) {
-                this.x = x;
-                this.y = y;
-                this.directionX = directionX;
-                this.directionY = directionY;
-                this.size = size;
-                this.color = color;
-                this.baseX = this.x;
-                this.baseY = this.y;
+                this.x = x; this.y = y;
+                this.directionX = directionX; this.directionY = directionY;
+                this.size = size; this.color = color;
             }
-            // Dessiner
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
                 ctx.fillStyle = this.color;
                 ctx.fill();
             }
-            // Mettre à jour la position
             update() {
-                // Rebond sur les bords
-                if (this.x > canvas.width || this.x < 0) {
-                    this.directionX = -this.directionX;
-                }
-                if (this.y > canvas.height || this.y < 0) {
-                    this.directionY = -this.directionY;
-                }
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
 
-                // Interaction avec la souris (Répulsion légère)
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
@@ -321,23 +333,19 @@
             }
         }
 
-        // Initialiser le réseau
         function initParticles() {
             particlesArray = [];
             for (let i = 0; i < numberOfParticles; i++) {
                 let size = (Math.random() * 2) + 0.5;
                 let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
                 let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                // Vitesse de déplacement très lente (ambiance spatiale/technique)
                 let directionX = (Math.random() * 0.8) - 0.4;
                 let directionY = (Math.random() * 0.8) - 0.4;
-                let color = 'rgba(59, 130, 246, 0.8)'; // Bleu tech (accent)
-
+                let color = 'rgba(59, 130, 246, 0.8)'; // Bleu tech
                 particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
             }
         }
 
-        // Relier les particules proches par des lignes
         function connectParticles() {
             let opacityValue = 1;
             for (let a = 0; a < particlesArray.length; a++) {
@@ -345,10 +353,9 @@
                     let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) 
                                  + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                     
-                    // Si la distance est faible, on trace une ligne
                     if (distance < (canvas.width / 10) * (canvas.height / 10)) {
                         opacityValue = 1 - (distance / 20000);
-                        ctx.strokeStyle = 'rgba(59, 130, 246,' + opacityValue + ')'; // Lignes bleues
+                        ctx.strokeStyle = 'rgba(59, 130, 246,' + opacityValue + ')';
                         ctx.lineWidth = 0.5;
                         ctx.beginPath();
                         ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
@@ -359,11 +366,9 @@
             }
         }
 
-        // Boucle d'animation
         function animateParticles() {
             requestAnimationFrame(animateParticles);
             ctx.clearRect(0, 0, innerWidth, innerHeight);
-            
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update();
             }
