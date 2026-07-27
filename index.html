@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etsangou | Portfolio</title>
+    <!-- Chargement de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Personnalisation des couleurs cyberpunk/tech */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tech-bg': '#0f172a',
+                        'tech-cpp': '#3b82f6',
+                        'tech-ia': '#a855f7',
+                        'tech-web': '#10b981',
+                        'tech-hard': '#ef4444',
+                    },
+                    fontFamily: {
+                        'mono': ['"Fira Code"', 'monospace'],
+                        'sans': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </style>
+    <!-- Police Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-tech-bg text-gray-300 font-sans antialiased selection:bg-tech-cpp selection:text-white">
+
+    <!-- Header / Hero Section -->
+    <header class="min-h-[70vh] flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
+        <!-- Effet de lueur en fond -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-tech-cpp/20 rounded-full blur-[100px] -z-10"></div>
+        
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
+            <span class="text-tech-cpp">&lt;</span> Etsangou <span class="text-tech-cpp">/&gt;</span>
+        </h1>
+        <p class="text-xl md:text-2xl font-mono text-gray-400 mb-8 max-w-2xl">
+            Software & Hardware Engineer
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 font-mono text-sm">
+            <span class="px-4 py-2 border border-tech-cpp text-tech-cpp rounded-full">C++</span>
+            <span class="px-4 py-2 border border-tech-web text-tech-web rounded-full">Web</span>
+            <span class="px-4 py-2 border border-tech-ia text-tech-ia rounded-full">IA</span>
+            <span class="px-4 py-2 border border-tech-hard text-tech-hard rounded-full">Hardware</span>
+        </div>
+    </header>
+
+    <!-- Section Projets -->
+    <main class="max-w-6xl mx-auto px-4 py-16">
+        <h2 class="text-3xl font-bold text-white mb-10 border-b border-gray-800 pb-4">Mes Projets</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Projet 1 : C++ / Hardware -->
+            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-tech-hard transition-colors duration-300 group">
+                <div class="text-tech-hard mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Driver Microcontrôleur</h3>
+                <p class="text-gray-400 mb-4 text-sm">Développement d'un driver bas niveau en C++ pour un capteur environnemental sur STM32.</p>
+                <a href="https://github.com/etsangou" class="text-tech-hard font-mono text-sm hover:underline group-hover:text-white transition-colors">Voir le code →</a>
+            </div>
+
+            <!-- Projet 2 : IA -->
+            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-tech-ia transition-colors duration-300 group">
+                <div class="text-tech-ia mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Modèle de Vision</h3>
+                <p class="text-gray-400 mb-4 text-sm">Entraînement d'un modèle de reconnaissance d'objets (Computer Vision) intégré sur une carte embarquée.</p>
+                <a href="https://github.com/etsangou" class="text-tech-ia font-mono text-sm hover:underline group-hover:text-white transition-colors">Voir le code →</a>
+            </div>
+
+            <!-- Projet 3 : Web -->
+            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-tech-web transition-colors duration-300 group">
+                <div class="text-tech-web mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Dashboard IoT</h3>
+                <p class="text-gray-400 mb-4 text-sm">Interface web temps réel affichant les données des capteurs hardware. Stack : HTML, Tailwind, JS.</p>
+                <a href="https://github.com/etsangou" class="text-tech-web font-mono text-sm hover:underline group-hover:text-white transition-colors">Voir le code →</a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 mt-16 py-8 text-center font-mono text-sm text-gray-500">
+        <p>Construit par Etsangou. Hébergé sur <a href="https://github.com/etsangou" class="text-white hover:text-tech-cpp transition-colors">GitHub</a>.</p>
+    </footer>
+
+</body>
+</html>
