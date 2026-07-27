@@ -3,95 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etsangou | Portfolio</title>
-    <!-- Chargement de Tailwind CSS -->
+    <title>Etsangou | Développeur & Ingénieur</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Personnalisation des couleurs cyberpunk/tech */
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'tech-bg': '#0f172a',
-                        'tech-cpp': '#3b82f6',
-                        'tech-ia': '#a855f7',
-                        'tech-web': '#10b981',
-                        'tech-hard': '#ef4444',
+                        dark: '#0a0a0f',
+                        panel: '#13131a',
+                        accent: '#3b82f6', // Bleu tech
+                        terminal: '#10b981', // Vert CLI
                     },
                     fontFamily: {
-                        'mono': ['"Fira Code"', 'monospace'],
-                        'sans': ['Inter', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
                     }
                 }
             }
         }
     </style>
-    <!-- Police Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
-<body class="bg-tech-bg text-gray-300 font-sans antialiased selection:bg-tech-cpp selection:text-white">
+<body class="bg-dark text-gray-300 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Header / Hero Section -->
-    <header class="min-h-[70vh] flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
-        <!-- Effet de lueur en fond -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-tech-cpp/20 rounded-full blur-[100px] -z-10"></div>
-        
-        <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
-            <span class="text-tech-cpp">&lt;</span> Etsangou <span class="text-tech-cpp">/&gt;</span>
-        </h1>
-        <p class="text-xl md:text-2xl font-mono text-gray-400 mb-8 max-w-2xl">
-            Software & Hardware Engineer
-        </p>
-        <div class="flex flex-wrap justify-center gap-4 font-mono text-sm">
-            <span class="px-4 py-2 border border-tech-cpp text-tech-cpp rounded-full">C++</span>
-            <span class="px-4 py-2 border border-tech-web text-tech-web rounded-full">Web</span>
-            <span class="px-4 py-2 border border-tech-ia text-tech-ia rounded-full">IA</span>
-            <span class="px-4 py-2 border border-tech-hard text-tech-hard rounded-full">Hardware</span>
+    <!-- En-tête -->
+    <header class="pt-20 pb-12 px-6 border-b border-gray-800/50 bg-panel/30 backdrop-blur-sm relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 w-full h-px bg-gradient-to-r from-transparent via-accent to-transparent -translate-x-1/2 opacity-50"></div>
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">
+                enzo<span class="text-accent">@</span>etsangou <span class="text-gray-500 font-mono text-2xl font-normal">~ $</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-400 max-w-2xl font-mono">
+                > Spécialisé en C++, IA, Web et Architecture Hardware.
+            </p>
+            <div class="mt-6 flex gap-3">
+                <a href="https://github.com/etsangou" target="_blank" class="px-5 py-2.5 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+                    GitHub (51 Repos)
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- Section Projets -->
-    <main class="max-w-6xl mx-auto px-4 py-16">
-        <h2 class="text-3xl font-bold text-white mb-10 border-b border-gray-800 pb-4">Mes Projets</h2>
+    <!-- Contenu Principal -->
+    <main class="flex-grow max-w-5xl mx-auto px-6 py-12 w-full">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                <span class="text-terminal font-mono">ls -la</span> Projets Mis en Avant
+            </h2>
+        </div>
+
+        <!-- Grille de projets -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            <!-- Projet 1 : C++ / Hardware -->
-            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-tech-hard transition-colors duration-300 group">
-                <div class="text-tech-hard mb-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+            <!-- Projet 1 : Moteur de jeu -->
+            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/redPoint">etsangou/redPoint</a></h3>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-gray-800 text-gray-400 border border-gray-700">Private</span>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2">Driver Microcontrôleur</h3>
-                <p class="text-gray-400 mb-4 text-sm">Développement d'un driver bas niveau en C++ pour un capteur environnemental sur STM32.</p>
-                <a href="https://github.com/etsangou" class="text-tech-hard font-mono text-sm hover:underline group-hover:text-white transition-colors">Voir le code →</a>
+                <p class="text-gray-400 text-sm mb-6 h-10">RedPoint est un moteur de jeu développé de A à Z. Focus sur l'optimisation et le rendu bas niveau.</p>
+                <div class="flex justify-between items-center text-xs font-mono text-gray-500">
+                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> C++ / OpenGL</span>
+                    <span>Modifié il y a 1 an</span>
+                </div>
             </div>
 
             <!-- Projet 2 : IA -->
-            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-tech-ia transition-colors duration-300 group">
-                <div class="text-tech-ia mb-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/unty_Projet_ChessIA">etsangou/unty_Projet_ChessIA</a></h3>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-gray-800 text-gray-400 border border-gray-700">Private</span>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2">Modèle de Vision</h3>
-                <p class="text-gray-400 mb-4 text-sm">Entraînement d'un modèle de reconnaissance d'objets (Computer Vision) intégré sur une carte embarquée.</p>
-                <a href="https://github.com/etsangou" class="text-tech-ia font-mono text-sm hover:underline group-hover:text-white transition-colors">Voir le code →</a>
+                <p class="text-gray-400 text-sm mb-6 h-10">Chess IA est un bot d'intelligence artificielle capable d'analyser et de jouer aux échecs.</p>
+                <div class="flex justify-between items-center text-xs font-mono text-gray-500">
+                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-500"></span> C# / Unity / IA</span>
+                    <span>Modifié il y a 7 mois</span>
+                </div>
             </div>
 
-            <!-- Projet 3 : Web -->
-            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-tech-web transition-colors duration-300 group">
-                <div class="text-tech-web mb-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+            <!-- Projet 3 : Application Web -->
+            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/Thorium">etsangou/Thorium</a></h3>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-accent/10 text-accent border border-accent/20">Public</span>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2">Dashboard IoT</h3>
-                <p class="text-gray-400 mb-4 text-sm">Interface web temps réel affichant les données des capteurs hardware. Stack : HTML, Tailwind, JS.</p>
-                <a href="https://github.com/etsangou" class="text-tech-web font-mono text-sm hover:underline group-hover:text-white transition-colors">Voir le code →</a>
+                <p class="text-gray-400 text-sm mb-6 h-10">Création d'une application de gestion et d'interface utilisateur performante.</p>
+                <div class="flex justify-between items-center text-xs font-mono text-gray-500">
+                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-400"></span> Web / App</span>
+                    <span>Modifié il y a 3 mois</span>
+                </div>
             </div>
 
+            <!-- Projet 4 : Hardware / Bas niveau -->
+            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/qore_vm">etsangou/qore_vm</a></h3>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-gray-800 text-gray-400 border border-gray-700">Private</span>
+                </div>
+                <p class="text-gray-400 text-sm mb-6 h-10">Conception d'une machine virtuelle (VM) sur mesure pour l'exécution d'instructions bas niveau.</p>
+                <div class="flex justify-between items-center text-xs font-mono text-gray-500">
+                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span> Architecture / C++</span>
+                    <span>Modifié il y a 6 mois</span>
+                </div>
+            </div>
+
+            <!-- Projet 5 : Récent -->
+            <div class="bg-panel border border-gray-800 rounded-xl p-6 hover:border-gray-600 transition-all group md:col-span-2">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors"><a href="https://github.com/etsangou/foch_assistant">etsangou/foch_assistant</a></h3>
+                    <span class="px-2.5 py-1 rounded-full text-xs font-mono bg-gray-800 text-gray-400 border border-gray-700 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-terminal animate-pulse"></span> Récent (9 jours)
+                    </span>
+                </div>
+                <p class="text-gray-400 text-sm mb-2">Suite d’applications pour le support et l'assistance technique.</p>
+                <div class="mt-4 flex flex-wrap gap-2 font-mono text-xs text-gray-500">
+                    <span class="bg-gray-800/80 px-2 py-1 rounded">Automation</span>
+                    <span class="bg-gray-800/80 px-2 py-1 rounded">Outils internes</span>
+                </div>
+            </div>
+            
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-gray-800 mt-16 py-8 text-center font-mono text-sm text-gray-500">
-        <p>Construit par Etsangou. Hébergé sur <a href="https://github.com/etsangou" class="text-white hover:text-tech-cpp transition-colors">GitHub</a>.</p>
+    <!-- Pied de page -->
+    <footer class="border-t border-gray-800/50 bg-panel/30 py-8 mt-auto">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <p class="text-gray-500 text-sm font-mono">
+                > Déployé via GitHub Pages // <a href="https://github.com/etsangou" class="hover:text-white transition-colors">@etsangou</a>
+            </p>
+        </div>
     </footer>
 
 </body>
