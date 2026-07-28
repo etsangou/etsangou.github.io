@@ -59,10 +59,11 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
         
-        /* Utilitaires pour couper le texte s'il est trop long pour le bloc fixe */
+        /* Utilitaires pour couper le texte */
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .line-clamp-5 { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-8 { display: -webkit-box; -webkit-line-clamp: 8; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
 <body class="bg-dark text-gray-300 font-sans antialiased min-h-screen flex flex-col relative overflow-x-hidden">
@@ -146,10 +147,8 @@
                 </div>
             </div>
 
-            <!-- GRILLE BENTO (MODIFIEE) -->
-            <!-- En retirant md:auto-rows-[180px], la hauteur s'adapte. On utilise grid-cols-1 à 3 et gap, mais avec masonry ou un align-items différent -->
-            <!-- On va utiliser une approche masonry pure CSS (columns) pour que tout s'emboite parfaitement -->
-            <div id="bento-grid" class="columns-1 md:columns-2 lg:columns-3 gap-4 md:gap-5 space-y-4 md:space-y-5">
+            <!-- GRILLE BENTO (Le "Vrai" Bento avec Grid-Flow-Dense) -->
+            <div id="bento-grid" class="grid grid-cols-1 md:grid-cols-3 md:auto-rows-[180px] gap-4 md:gap-5 grid-flow-row-dense">
                 <!-- Les projets seront injectés ici -->
             </div>
         </main>
@@ -170,7 +169,7 @@
     <!-- SCRIPTS JS -->
     <script>
         /* ==================================================================
-           1. ALGORITHME GITHUB (Bento ADAPTATIF)
+           1. ALGORITHME GITHUB (Bento GRID Intelligent)
         ================================================================== */
         const GITHUB_USERNAME = 'etsangou';
         const bentoGrid = document.getElementById('bento-grid');
@@ -203,12 +202,38 @@
 
         async function fetchGitHubProjects() {
             try {
-                // On récupère les 6 projets les plus récents
+                // On récupère les 6 projets les plus récents (Ordre chronologique par defaut via l'API)
                 const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=6`);
                 const repos = await response.json();
                 
                 loadingIndicator.style.display = 'none';
 
+                // ÉTAPE 1 : On crée une copie des repos pour les classer par quantité de texte (du + long au + court)
+                const sortedByLength = [...repos].sort((a, b) => {
+                    const lenA = a.description ? a.description.length : 0;
+                    const lenB = b.description ? b.description.length : 0;
+                    return lenB - lenA; // Tri décroissant
+                });
+
+                // ÉTAPE 2 : On définit nos formes de bento idéales (2x2, 2x1, 1x2, 1x1...)
+                const bentoShapes = [
+                    { grid: "md:col-span-2 md:row-span-2", clamp: "line-clamp-8" }, // 1er (Le plus long texte = Carré géant)
+                    { grid: "md:col-span-2 md:row-span-1", clamp: "line-clamp-3" }, // 2ème (Long texte = Rectangle horizontal)
+                    { grid: "md:col-span-1 md:row-span-2", clamp: "line-clamp-8" }, // 3ème (Long texte = Rectangle vertical)
+                    { grid: "md:col-span-1 md:row-span-1", clamp: "line-clamp-3" }, // 4ème (Petit texte = Petit carré)
+                    { grid: "md:col-span-1 md:row-span-1", clamp: "line-clamp-3" }, // 5ème
+                    { grid: "md:col-span-1 md:row-span-1", clamp: "line-clamp-3" }  // 6ème
+                ];
+
+                // ÉTAPE 3 : On attribue la forme idéale à chaque repo en fonction de son rang de longueur
+                sortedByLength.forEach((repo, index) => {
+                    if (index < 6) {
+                        repo.bentoClass = bentoShapes[index].grid;
+                        repo.clampClass = bentoShapes[index].clamp;
+                    }
+                });
+
+                // ÉTAPE 4 : On génère le HTML en utilisant l'array ORIGINAL (repos) pour garder l'ordre chronologique de 'ls -t'
                 repos.forEach((repo, index) => {
                     if (index >= 6) return; 
 
@@ -217,22 +242,17 @@
                     const langDisplay = repo.language || 'Config / Autre';
                     const updatedText = timeAgo(repo.pushed_at);
 
-                    // Calcul de l'importance/taille basée sur le contenu (titre + description)
-                    // Si on veut mettre en avant un projet en particulier, on peut ajouter une condition ici.
-                    // Pour le style 'masonry', on retire les classes 'row-span' et 'col-span'
-                    // et on ajoute 'break-inside-avoid' pour ne pas couper les cartes entre deux colonnes.
-
                     const cardHTML = `
-                        <a href="${repo.html_url}" target="_blank" class="glass-panel rounded-xl p-5 md:p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden flex flex-col justify-between break-inside-avoid block">
+                        <a href="${repo.html_url}" target="_blank" class="glass-panel rounded-xl p-5 md:p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden flex flex-col justify-between ${repo.bentoClass}">
                             
                             <div class="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform group-hover:bg-accent/10"></div>
                             
-                            <div class="mb-4">
+                            <div>
                                 <div class="flex justify-between items-start mb-3">
-                                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors pr-4 break-words" title="${repo.name}">${repo.name}</h3>
+                                    <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors pr-4 truncate" title="${repo.name}">${repo.name}</h3>
                                     <svg class="w-5 h-5 text-gray-500 group-hover:text-accent transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                                 </div>
-                                <p class="text-gray-400 text-sm opacity-80 whitespace-pre-wrap">
+                                <p class="text-gray-400 text-sm mb-4 opacity-80 ${repo.clampClass}">
                                     ${description}
                                 </p>
                             </div>
