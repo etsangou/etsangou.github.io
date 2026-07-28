@@ -121,11 +121,11 @@ function copyDiscord() {
 }
 
 const bootSequence = [
-    "Initializing kernel...",
-    "Loading UI components........... [OK]",
-    "Fetching GitHub API............. [PENDING]",
-    "Establishing Connections........ [OK]",
-    "Welcome to enzo@etsangou portfolio."
+    "10 SYS 64738",
+    "Loading modules: [C++, Web, AI, HW]",
+    "Syncing repository states...",
+    "Environment compiled successfully.",
+    "Hello, World."
 ];
 
 const bootTextElement = document.getElementById('boot-text');
