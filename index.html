@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enzo Tsangouabeka | Etudiant Logiciel & Hardware</title>
     
-    <!-- Configuration Tailwind (doit rester avant le chargement du CDN) -->
+    <!-- Configuration Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -38,8 +38,6 @@
     </script>
     
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    
-    <!-- Liaison avec le fichier CSS externe -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-dark text-gray-300 font-sans antialiased min-h-screen flex flex-col relative overflow-x-hidden">
@@ -117,8 +115,8 @@
                 </div>
             </div>
 
-            <!-- GRILLE BENTO -->
-            <div id="bento-grid" class="grid grid-cols-1 md:grid-cols-3 md:auto-rows-[180px] gap-4 md:gap-5 grid-flow-row-dense">
+            <!-- GRILLE BENTO CORRIGÉE : Plus d'auto-rows fixes -->
+            <div id="bento-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
                 <!-- Projets injectés dynamiquement ici -->
             </div>
         </main>

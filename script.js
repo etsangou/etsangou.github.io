@@ -1,5 +1,5 @@
 /* ==================================================================
-    1. ALGORITHME GITHUB (Bento GRID Intelligent)
+    1. ALGORITHME GITHUB (Bento GRID Ajusté)
 ================================================================== */
 const GITHUB_USERNAME = 'etsangou';
 const bentoGrid = document.getElementById('bento-grid');
@@ -37,59 +37,60 @@ async function fetchGitHubProjects() {
         
         loadingIndicator.style.display = 'none';
 
-        const sortedByLength = [...repos].sort((a, b) => {
-            const lenA = a.description ? a.description.length : 0;
-            const lenB = b.description ? b.description.length : 0;
-            return lenB - lenA;
-        });
-
-        const bentoShapes = [
-            { grid: "md:col-span-2 md:row-span-2", clamp: "line-clamp-8" }, 
-            { grid: "md:col-span-2 md:row-span-1", clamp: "line-clamp-3" }, 
-            { grid: "md:col-span-1 md:row-span-2", clamp: "line-clamp-8" }, 
-            { grid: "md:col-span-1 md:row-span-1", clamp: "line-clamp-3" }, 
-            { grid: "md:col-span-1 md:row-span-1", clamp: "line-clamp-3" }, 
-            { grid: "md:col-span-1 md:row-span-1", clamp: "line-clamp-3" }  
+        // Layout naturel : pas de "row-span", que des "col-span" pour jouer sur la largeur.
+        // Les hauteurs s'ajustent automatiquement au contenu de chaque ligne.
+        // Ligne 1 : [ Projet 1 (2 colonnes) ] [ Projet 2 (1 colonne) ]
+        // Ligne 2 : [ Projet 3 (1 col) ] [ Projet 4 (1 col) ] [ Projet 5 (1 col) ]
+        // Ligne 3 : [ Projet 6 (Pleine largeur - 3 colonnes) ]
+        const layoutConfig = [
+            { grid: "md:col-span-2", clamp: "line-clamp-3 md:line-clamp-4" }, 
+            { grid: "md:col-span-1", clamp: "line-clamp-3 md:line-clamp-4" },
+            { grid: "md:col-span-1", clamp: "line-clamp-3 md:line-clamp-4" },
+            { grid: "md:col-span-1", clamp: "line-clamp-3 md:line-clamp-4" },
+            { grid: "md:col-span-1", clamp: "line-clamp-3 md:line-clamp-4" },
+            { grid: "md:col-span-3", clamp: "line-clamp-3" }
         ];
 
-        sortedByLength.forEach((repo, index) => {
-            if (index < 6) {
-                repo.bentoClass = bentoShapes[index].grid;
-                repo.clampClass = bentoShapes[index].clamp;
-            }
-        });
+        bentoGrid.innerHTML = '';
 
-        repos.forEach((repo, index) => {
-            if (index >= 6) return; 
-
+        repos.slice(0, 6).forEach((repo, index) => {
+            const config = layoutConfig[index] || { grid: "md:col-span-1", clamp: "line-clamp-3" };
             const description = repo.description || 'Aucune description fournie pour ce dépôt.';
             const langColor = getLanguageColor(repo.language);
-            const langDisplay = repo.language || 'Config / Autre';
+            const langDisplay = repo.language || 'Autre';
             const updatedText = timeAgo(repo.pushed_at);
 
             const cardHTML = `
-                <a href="${repo.html_url}" target="_blank" class="glass-panel rounded-xl p-5 md:p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden flex flex-col justify-between ${repo.bentoClass}">
+                <a href="${repo.html_url}" target="_blank" 
+                   class="glass-panel rounded-xl p-5 md:p-6 hover:border-accent hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden flex flex-col justify-between ${config.grid}">
                     
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform group-hover:bg-accent/10"></div>
+                    <!-- Lueur d'arrière-plan au hover -->
+                    <div class="absolute -right-8 -top-8 w-28 h-28 bg-accent/5 rounded-full blur-xl group-hover:scale-150 transition-transform group-hover:bg-accent/15 pointer-events-none"></div>
                     
-                    <div>
-                        <div class="flex justify-between items-start mb-3">
-                            <h3 class="text-xl font-bold text-white group-hover:text-accent transition-colors pr-4 truncate" title="${repo.name}">${repo.name}</h3>
-                            <svg class="w-5 h-5 text-gray-500 group-hover:text-accent transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-start mb-2.5">
+                            <h3 class="text-base md:text-lg font-bold text-white group-hover:text-accent transition-colors pr-2 truncate" title="${repo.name}">
+                                ${repo.name}
+                            </h3>
+                            <svg class="w-4 h-4 text-gray-500 group-hover:text-accent transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
                         </div>
-                        <p class="text-gray-400 text-sm mb-4 opacity-80 text-justify hyphens-auto ${repo.clampClass}">
+                        <p class="text-gray-400 text-xs sm:text-sm opacity-85 text-left leading-relaxed ${config.clamp}">
                             ${description}
                         </p>
                     </div>
 
-                    <div class="mt-auto pt-4 border-t border-gray-800/50 flex flex-wrap gap-2 justify-between items-center text-xs font-mono text-gray-400">
-                        <span class="flex items-center gap-1.5 whitespace-nowrap">
-                            <span class="w-2.5 h-2.5 rounded-full ${langColor} shadow-[0_0_8px_rgba(255,255,255,0.2)]"></span> 
+                    <div class="pt-3 border-t border-gray-800/60 flex flex-wrap gap-2 justify-between items-center text-[11px] sm:text-xs font-mono text-gray-400 mt-auto">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full ${langColor}"></span> 
                             ${langDisplay}
                         </span>
-                        <span class="flex items-center gap-1 text-gray-500 whitespace-nowrap">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Modifié il y a ${updatedText}
+                        <span class="flex items-center gap-1 text-gray-500">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            ${updatedText}
                         </span>
                     </div>
                 </a>
@@ -106,7 +107,6 @@ async function fetchGitHubProjects() {
 /* ==================================================================
     2. FONCTIONS UI
 ================================================================== */
-
 function copyDiscord() {
     navigator.clipboard.writeText("just_king");
     const textEl = document.getElementById("discord-text");
