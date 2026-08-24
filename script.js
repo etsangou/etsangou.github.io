@@ -1,5 +1,5 @@
 /* ==================================================================
-    1. ALGORITHME GITHUB (Bento GRID Ajusté)
+    1. ALGORITHME GITHUB (Bento GRID Dynamique infini)
 ================================================================== */
 const GITHUB_USERNAME = 'etsangou';
 const bentoGrid = document.getElementById('bento-grid');
@@ -32,16 +32,13 @@ function getLanguageColor(language) {
 
 async function fetchGitHubProjects() {
     try {
-        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=6`);
+        // MODIFICATION ICI : per_page=100 pour charger tous les repos
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=100`);
         const repos = await response.json();
         
         loadingIndicator.style.display = 'none';
 
-        // Layout naturel : pas de "row-span", que des "col-span" pour jouer sur la largeur.
-        // Les hauteurs s'ajustent automatiquement au contenu de chaque ligne.
-        // Ligne 1 : [ Projet 1 (2 colonnes) ] [ Projet 2 (1 colonne) ]
-        // Ligne 2 : [ Projet 3 (1 col) ] [ Projet 4 (1 col) ] [ Projet 5 (1 col) ]
-        // Ligne 3 : [ Projet 6 (Pleine largeur - 3 colonnes) ]
+        // Ce pattern de 6 blocs remplit parfaitement un cycle de 3 lignes sur Tailwind.
         const layoutConfig = [
             { grid: "md:col-span-2", clamp: "line-clamp-3 md:line-clamp-4" }, 
             { grid: "md:col-span-1", clamp: "line-clamp-3 md:line-clamp-4" },
@@ -53,8 +50,15 @@ async function fetchGitHubProjects() {
 
         bentoGrid.innerHTML = '';
 
-        repos.slice(0, 6).forEach((repo, index) => {
-            const config = layoutConfig[index] || { grid: "md:col-span-1", clamp: "line-clamp-3" };
+        // Optionnel mais recommandé : on ignore les forks pour ne garder que vos propres projets
+        const publicRepos = repos.filter(repo => !repo.fork);
+
+        // MODIFICATION ICI : On enlève slice() pour tout afficher
+        publicRepos.forEach((repo, index) => {
+            
+            // L'ASTUCE MAGIQUE : index % 6 permet de répéter le motif Bento à l'infini !
+            const config = layoutConfig[index % 6]; 
+            
             const description = repo.description || 'Aucune description fournie pour ce dépôt.';
             const langColor = getLanguageColor(repo.language);
             const langDisplay = repo.language || 'Autre';
